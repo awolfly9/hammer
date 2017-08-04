@@ -1,23 +1,20 @@
 # -*- coding=utf-8 -*-
 
-from setuptools import setup, find_packages
+from distutils.core import setup
 
 setup(
-    name = 'hammer',
-    version = '0.0.1',
-    keywords = ('pip'),
-    description = 'lgq hammer tool',
-    long_description = 'lgq hammer tool',
-    license = 'MIT Licence',
+    name = 'lgqhammer',
+    version = '0.1',
 
-    url = 'http://awolfly9.com',
+    requires = ['pymysql'],
+
+    packages = ['hammer', 'hammer.pymysqlpool'],
+    scripts = ['./kill_port'],
+
+    url = 'http://awolfly9.com/',
+    license = 'MIT Licence',
     author = 'lgq',
     author_email = 'awolfly9@gmail.com',
 
-    # packages = ['hammer'],
-    packages = find_packages(),
-    # include_package_data = True,
-    platforms = 'any',
-    install_requires = [],
-    scripts = ['./kill_port'],
+    description = 'lgq hammer',
 )

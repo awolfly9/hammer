@@ -3,11 +3,8 @@
 
 import re
 import subprocess
-import logging
 import time
 import argparse
-import sys
-
 
 
 # 清理端口占用
