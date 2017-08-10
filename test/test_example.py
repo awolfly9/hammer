@@ -17,7 +17,7 @@ import threading
 import pandas as pd
 import random
 
-from pymysqlpool import ConnectionPool
+from hammer.pymysqlpool import ConnectionPool
 
 config = {
     'pool_name': 'test',

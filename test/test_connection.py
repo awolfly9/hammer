@@ -18,14 +18,15 @@ import pandas as pd
 import random
 import time
 
+from hammer.sqlhelper import SqlHelper
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
 
-from pymysqlpool import ConnectionPool
+from hammer.pymysqlpool import ConnectionPool
 
 logging.basicConfig(format = '[%(asctime)s][%(name)s][%(module)s.%(lineno)d][%(levelname)s] %(message)s',
                     datefmt = '%Y-%m-%d %H:%M:%S',
-                    level = logging.ERROR)
+                    level = logging.INFO)
 
 config = {
     'pool_name': 'test',
@@ -52,7 +53,7 @@ def conn_pool():
     return pool
 
 
-insert_sql = 'INSERT INTO folder (name, icon_url, create_at, thread) VALUES (%s, %s, %s, %s)'
+insert_sql = 'INSERT INTO folder (name, icon_url, create_at) VALUES (%s, %s, %s)'
 select_sql = 'SELECT * FROM folder ORDER BY id DESC LIMIT 10'
 update_sql = ''
 delete_sql = ''
@@ -101,16 +102,21 @@ def run():
 
 
 def test_insert_one():
-    with conn_pool().connection() as conn:
-        name = name_factory()
-        result = conn.cursor().execute(insert_sql, ('folder_{}'.format(name),
-                                                    'icon_{}.png'.format(name),
-                                                    datetime.datetime.now()))
-        conn.commit()
-        # print(result)
-        # _ = result
-        # print(cursor.connection)
-        # time.sleep(.1)
+    # with conn_pool().connection() as conn:
+    #     name = name_factory()
+    #     result = conn.cursor().execute(insert_sql, ('folder_{}'.format(name),
+    #                                                 'icon_{}.png'.format(name),
+    #                                                 datetime.datetime.now()))
+    #     conn.commit()
+    #
+    # time.sleep(10)
+    # with conn_pool().connection() as conn:
+    #     name = name_factory()
+    #     result = conn.cursor().execute(insert_sql, ('folder_{}'.format(name),
+    #                                                 'icon_{}.png'.format(name),
+    #                                                 datetime.datetime.now()))
+    #     conn.commit()
+    time.sleep(10)
 
 
 def test_insert_many():
@@ -192,10 +198,10 @@ if __name__ == '__main__':
     start = time.time()
     # test_insert_many()
     # test_query()
-    # test_insert_one()
+    test_insert_one()
     # test_query_with_pandas()
-    test_with_multi_threading()
-    test_single_thread_insert()
+    # test_with_multi_threading()
+    # test_single_thread_insert()
     # test_borrow_return_connections()
 
     time.sleep(1)

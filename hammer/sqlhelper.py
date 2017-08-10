@@ -5,6 +5,7 @@ import pymysql
 
 from hammer.pymysqlpool import ConnectionPool
 
+logger = logging.getLogger('sqlhelper')
 
 # db_config_temp
 # db_config = {
@@ -22,15 +23,12 @@ from hammer.pymysqlpool import ConnectionPool
 class SqlHelper(object):
     def __init__(self, **db_config):
         self._pool = self._conn_pool(**db_config)
-
+        self.db_config = db_config
         self.db_name = db_config.get('database', None)
 
     def _conn_pool(self, **db_config):
         pool = ConnectionPool(**db_config)
         return pool
-
-    def __del__(self):
-        self.close()
 
     def create_db(self, db_name):
         try:
@@ -40,7 +38,7 @@ class SqlHelper(object):
                 conn.commit()
             return True
         except Exception as e:
-            logging.exception('sql helper create_database exception:%s' % str(e))
+            logger.exception('sql helper create_database exception:%s' % str(e))
             return False
 
     def create_table(self, command):
@@ -50,7 +48,7 @@ class SqlHelper(object):
                 conn.commit()
             return True
         except Exception as e:
-            logging.exception('sql helper create_table exception:%s' % str(e))
+            logger.exception('sql helper create_table exception:%s' % str(e))
             return False
 
     def insert_data(self, command, data, commit = False):
@@ -61,7 +59,7 @@ class SqlHelper(object):
                     conn.commit()
             return True
         except Exception as e:
-            logging.exception('sql helper insert_data exception msg:%s' % e, logging.WARNING)
+            logger.exception('sql helper insert_data exception msg:%s' % e, logging.WARNING)
             return False
 
     def insert_json(self, data = {}, table_name = None, commit = False):
@@ -82,7 +80,7 @@ class SqlHelper(object):
                     conn.commit()
             return True
         except Exception as e:
-            logging.exception('sql helper insert_json exception msg:%s' % e)
+            logger.exception('sql helper insert_json exception msg:%s' % e)
             return False
 
     def insert_json_list(self, datas, table_name = None, commit = False):
@@ -95,7 +93,7 @@ class SqlHelper(object):
 
             return self.insert_list(keys, values, table_name, commit)
         except Exception as e:
-            logging.exception('sql helper insert_json_list exception msg:%s' % e)
+            logger.exception('sql helper insert_json_list exception msg:%s' % e)
             return False
 
     # keys = ['name', 'age'] values = [('liu', 10), ('guang', 20'), ('quan', 30)]
@@ -111,12 +109,11 @@ class SqlHelper(object):
                 if commit:
                     conn.commit()
         except Exception as e:
-            logging.exception('sql helper insert_json exception msg:%s' % e)
+            logger.exception('sql helper insert_json exception msg:%s' % e)
             return False
 
     def select_db(self, db_name):
-        for conn in self._pool:
-            conn.select_db(db_name)
+        self._pool.select_db(db_name)
         self.db_name = db_name
 
     def commit(self):
@@ -134,7 +131,7 @@ class SqlHelper(object):
                     conn.commit()
             return True
         except Exception as e:
-            logging.exception('sql helper execute exception msg:%s' % str(e))
+            logger.exception('sql helper execute exception msg:%s' % str(e))
             return False
 
     def query(self, command, commit = False, cursor_type = 'tuple'):
@@ -147,7 +144,7 @@ class SqlHelper(object):
                     conn.commit()
                 return data
         except Exception as e:
-            logging.exception('sql helper execute exception msg:%s' % str(e))
+            logger.exception('sql helper execute exception msg:%s' % str(e))
             return None
 
     def query_one(self, command, commit = False, cursor_type = 'tuple'):
@@ -160,7 +157,7 @@ class SqlHelper(object):
                     conn.commit()
                 return data
         except Exception as e:
-            logging.exception('sql helper execute exception msg:%s' % str(e))
+            logger.exception('sql helper execute exception msg:%s' % str(e))
             return None
             # 在整个 mysql 中查找
 
@@ -171,7 +168,7 @@ class SqlHelper(object):
                 res = conn.cursor().execute(command)
                 return True if res == 1 else False
         except Exception as e:
-            logging.exception('sql helper is_exists exception msg:%s' % e)
+            logger.exception('sql helper is_exists exception msg:%s' % e)
             return False
 
     def check_table_exists(self, table_name, db_name = None):

@@ -18,7 +18,7 @@
 * 更改代码
 * 输入命令打包
 ```
-python setup.py sdict
+python setup.py sdist
 ```
 * 上传打包后的文件到 pypi
 ```

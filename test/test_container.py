@@ -15,7 +15,7 @@ import logging
 
 import time
 
-from pymysqlpool.pool import *
+from hammer.pymysqlpool.pool import *
 
 logging.basicConfig(format='[%(asctime)s][%(name)s][%(module)s.%(lineno)d][%(levelname)s] %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',
