@@ -112,6 +112,42 @@ class SqlHelper(object):
             logger.exception('sql helper insert_json exception msg:%s' % e)
             return False
 
+    def insert_data_list(self, keys, datas, table_name = None, commit = False):
+        if len(keys) <= 0 or len(datas) <= 0:
+            return False
+
+        try:
+            val_param = ''
+            for i, d in enumerate(datas):
+                value = '('
+                for j, k in enumerate(keys):
+                    v = d.get(k, None)
+                    if v is not None:
+                        value = value + '\'' + str(v) + '\''
+                    else:
+                        value = value + 'NULL'
+                    if j < len(keys) - 1:
+                        value = value + ','
+                if i < len(datas) - 1:
+                    value = value + '),'
+                else:
+                    value = value + ');'
+
+                val_param = val_param + value
+
+            key_param = ','.join(keys)
+            command = "INSERT IGNORE INTO {table_name} ({keys}) values {val}". \
+                format(table_name = table_name, keys = key_param, val = val_param)
+
+            with self._pool.connection() as conn:
+                conn.cursor().execute(command)
+                if commit:
+                    conn.commit()
+            return True
+        except Exception as e:
+            logger.exception('sql helper insert_data_list exception msg:%s' % e)
+            return False
+
     def select_db(self, db_name):
         self._pool.select_db(db_name)
         self.db_name = db_name

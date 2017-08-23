@@ -5,7 +5,7 @@
 #
 
 from thrift.Thrift import *
-from ttypes import *
+from hbase.ttypes import *
 from thrift.Thrift import TProcessor
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
@@ -2063,7 +2063,7 @@ class Processor(Iface, TProcessor):
     result = enableTable_result()
     try:
       self._handler.enableTable(args.tableName)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("enableTable", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2077,7 +2077,7 @@ class Processor(Iface, TProcessor):
     result = disableTable_result()
     try:
       self._handler.disableTable(args.tableName)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("disableTable", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2091,7 +2091,7 @@ class Processor(Iface, TProcessor):
     result = isTableEnabled_result()
     try:
       result.success = self._handler.isTableEnabled(args.tableName)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("isTableEnabled", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2105,7 +2105,7 @@ class Processor(Iface, TProcessor):
     result = compact_result()
     try:
       self._handler.compact(args.tableNameOrRegionName)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("compact", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2119,7 +2119,7 @@ class Processor(Iface, TProcessor):
     result = majorCompact_result()
     try:
       self._handler.majorCompact(args.tableNameOrRegionName)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("majorCompact", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2133,7 +2133,7 @@ class Processor(Iface, TProcessor):
     result = getTableNames_result()
     try:
       result.success = self._handler.getTableNames()
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("getTableNames", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2147,7 +2147,7 @@ class Processor(Iface, TProcessor):
     result = getColumnDescriptors_result()
     try:
       result.success = self._handler.getColumnDescriptors(args.tableName)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("getColumnDescriptors", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2161,7 +2161,7 @@ class Processor(Iface, TProcessor):
     result = getTableRegions_result()
     try:
       result.success = self._handler.getTableRegions(args.tableName)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("getTableRegions", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2175,11 +2175,11 @@ class Processor(Iface, TProcessor):
     result = createTable_result()
     try:
       self._handler.createTable(args.tableName, args.columnFamilies)
-    except IOError, io:
+    except IOError as io:
       result.io = io
-    except IllegalArgument, ia:
+    except IllegalArgument as ia:
       result.ia = ia
-    except AlreadyExists, exist:
+    except AlreadyExists as exist:
       result.exist = exist
     oprot.writeMessageBegin("createTable", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2193,7 +2193,7 @@ class Processor(Iface, TProcessor):
     result = deleteTable_result()
     try:
       self._handler.deleteTable(args.tableName)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("deleteTable", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2207,7 +2207,7 @@ class Processor(Iface, TProcessor):
     result = get_result()
     try:
       result.success = self._handler.get(args.tableName, args.row, args.column)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("get", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2221,7 +2221,7 @@ class Processor(Iface, TProcessor):
     result = getVer_result()
     try:
       result.success = self._handler.getVer(args.tableName, args.row, args.column, args.numVersions)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("getVer", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2235,7 +2235,7 @@ class Processor(Iface, TProcessor):
     result = getVerTs_result()
     try:
       result.success = self._handler.getVerTs(args.tableName, args.row, args.column, args.timestamp, args.numVersions)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("getVerTs", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2249,7 +2249,7 @@ class Processor(Iface, TProcessor):
     result = getRow_result()
     try:
       result.success = self._handler.getRow(args.tableName, args.row)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("getRow", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2263,7 +2263,7 @@ class Processor(Iface, TProcessor):
     result = getRowWithColumns_result()
     try:
       result.success = self._handler.getRowWithColumns(args.tableName, args.row, args.columns)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("getRowWithColumns", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2277,7 +2277,7 @@ class Processor(Iface, TProcessor):
     result = getRowTs_result()
     try:
       result.success = self._handler.getRowTs(args.tableName, args.row, args.timestamp)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("getRowTs", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2291,7 +2291,7 @@ class Processor(Iface, TProcessor):
     result = getRowWithColumnsTs_result()
     try:
       result.success = self._handler.getRowWithColumnsTs(args.tableName, args.row, args.columns, args.timestamp)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("getRowWithColumnsTs", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2305,9 +2305,9 @@ class Processor(Iface, TProcessor):
     result = mutateRow_result()
     try:
       self._handler.mutateRow(args.tableName, args.row, args.mutations)
-    except IOError, io:
+    except IOError as io:
       result.io = io
-    except IllegalArgument, ia:
+    except IllegalArgument as ia:
       result.ia = ia
     oprot.writeMessageBegin("mutateRow", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2321,9 +2321,9 @@ class Processor(Iface, TProcessor):
     result = mutateRowTs_result()
     try:
       self._handler.mutateRowTs(args.tableName, args.row, args.mutations, args.timestamp)
-    except IOError, io:
+    except IOError as io:
       result.io = io
-    except IllegalArgument, ia:
+    except IllegalArgument as ia:
       result.ia = ia
     oprot.writeMessageBegin("mutateRowTs", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2337,9 +2337,9 @@ class Processor(Iface, TProcessor):
     result = mutateRows_result()
     try:
       self._handler.mutateRows(args.tableName, args.rowBatches)
-    except IOError, io:
+    except IOError as io:
       result.io = io
-    except IllegalArgument, ia:
+    except IllegalArgument as ia:
       result.ia = ia
     oprot.writeMessageBegin("mutateRows", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2353,9 +2353,9 @@ class Processor(Iface, TProcessor):
     result = mutateRowsTs_result()
     try:
       self._handler.mutateRowsTs(args.tableName, args.rowBatches, args.timestamp)
-    except IOError, io:
+    except IOError as io:
       result.io = io
-    except IllegalArgument, ia:
+    except IllegalArgument as ia:
       result.ia = ia
     oprot.writeMessageBegin("mutateRowsTs", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2369,9 +2369,9 @@ class Processor(Iface, TProcessor):
     result = atomicIncrement_result()
     try:
       result.success = self._handler.atomicIncrement(args.tableName, args.row, args.column, args.value)
-    except IOError, io:
+    except IOError as io:
       result.io = io
-    except IllegalArgument, ia:
+    except IllegalArgument as ia:
       result.ia = ia
     oprot.writeMessageBegin("atomicIncrement", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2385,7 +2385,7 @@ class Processor(Iface, TProcessor):
     result = deleteAll_result()
     try:
       self._handler.deleteAll(args.tableName, args.row, args.column)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("deleteAll", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2399,7 +2399,7 @@ class Processor(Iface, TProcessor):
     result = deleteAllTs_result()
     try:
       self._handler.deleteAllTs(args.tableName, args.row, args.column, args.timestamp)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("deleteAllTs", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2413,7 +2413,7 @@ class Processor(Iface, TProcessor):
     result = deleteAllRow_result()
     try:
       self._handler.deleteAllRow(args.tableName, args.row)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("deleteAllRow", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2427,7 +2427,7 @@ class Processor(Iface, TProcessor):
     result = deleteAllRowTs_result()
     try:
       self._handler.deleteAllRowTs(args.tableName, args.row, args.timestamp)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("deleteAllRowTs", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2441,7 +2441,7 @@ class Processor(Iface, TProcessor):
     result = scannerOpen_result()
     try:
       result.success = self._handler.scannerOpen(args.tableName, args.startRow, args.columns)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("scannerOpen", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2455,7 +2455,7 @@ class Processor(Iface, TProcessor):
     result = scannerOpenWithStop_result()
     try:
       result.success = self._handler.scannerOpenWithStop(args.tableName, args.startRow, args.stopRow, args.columns)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("scannerOpenWithStop", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2469,7 +2469,7 @@ class Processor(Iface, TProcessor):
     result = scannerOpenWithPrefix_result()
     try:
       result.success = self._handler.scannerOpenWithPrefix(args.tableName, args.startAndPrefix, args.columns)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("scannerOpenWithPrefix", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2483,7 +2483,7 @@ class Processor(Iface, TProcessor):
     result = scannerOpenTs_result()
     try:
       result.success = self._handler.scannerOpenTs(args.tableName, args.startRow, args.columns, args.timestamp)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("scannerOpenTs", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2497,7 +2497,7 @@ class Processor(Iface, TProcessor):
     result = scannerOpenWithStopTs_result()
     try:
       result.success = self._handler.scannerOpenWithStopTs(args.tableName, args.startRow, args.stopRow, args.columns, args.timestamp)
-    except IOError, io:
+    except IOError as io:
       result.io = io
     oprot.writeMessageBegin("scannerOpenWithStopTs", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2511,9 +2511,9 @@ class Processor(Iface, TProcessor):
     result = scannerGet_result()
     try:
       result.success = self._handler.scannerGet(args.id)
-    except IOError, io:
+    except IOError as io:
       result.io = io
-    except IllegalArgument, ia:
+    except IllegalArgument as ia:
       result.ia = ia
     oprot.writeMessageBegin("scannerGet", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2527,9 +2527,9 @@ class Processor(Iface, TProcessor):
     result = scannerGetList_result()
     try:
       result.success = self._handler.scannerGetList(args.id, args.nbRows)
-    except IOError, io:
+    except IOError as io:
       result.io = io
-    except IllegalArgument, ia:
+    except IllegalArgument as ia:
       result.ia = ia
     oprot.writeMessageBegin("scannerGetList", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -2543,9 +2543,9 @@ class Processor(Iface, TProcessor):
     result = scannerClose_result()
     try:
       self._handler.scannerClose(args.id)
-    except IOError, io:
+    except IOError as io:
       result.io = io
-    except IllegalArgument, ia:
+    except IllegalArgument as ia:
       result.ia = ia
     oprot.writeMessageBegin("scannerClose", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3198,7 +3198,7 @@ class getTableNames_result(object):
         if ftype == TType.LIST:
           self.success = []
           (_etype19, _size16) = iprot.readListBegin()
-          for _i20 in xrange(_size16):
+          for _i20 in range(_size16):
             _elem21 = iprot.readString();
             self.success.append(_elem21)
           iprot.readListEnd()
@@ -3330,8 +3330,8 @@ class getColumnDescriptors_result(object):
         if ftype == TType.MAP:
           self.success = {}
           (_ktype24, _vtype25, _size23 ) = iprot.readMapBegin() 
-          for _i27 in xrange(_size23):
-            _key28 = iprot.readString();
+          for _i27 in range(_size23):
+            _key28 = iprot.readString()
             _val29 = ColumnDescriptor()
             _val29.read(iprot)
             self.success[_key28] = _val29
@@ -3465,7 +3465,7 @@ class getTableRegions_result(object):
         if ftype == TType.LIST:
           self.success = []
           (_etype35, _size32) = iprot.readListBegin()
-          for _i36 in xrange(_size32):
+          for _i36 in range(_size32):
             _elem37 = TRegionInfo()
             _elem37.read(iprot)
             self.success.append(_elem37)
@@ -3548,7 +3548,7 @@ class createTable_args(object):
         if ftype == TType.LIST:
           self.columnFamilies = []
           (_etype42, _size39) = iprot.readListBegin()
-          for _i43 in xrange(_size39):
+          for _i43 in range(_size39):
             _elem44 = ColumnDescriptor()
             _elem44.read(iprot)
             self.columnFamilies.append(_elem44)
@@ -3895,7 +3895,7 @@ class get_result(object):
         if ftype == TType.LIST:
           self.success = []
           (_etype49, _size46) = iprot.readListBegin()
-          for _i50 in xrange(_size46):
+          for _i50 in range(_size46):
             _elem51 = TCell()
             _elem51.read(iprot)
             self.success.append(_elem51)
@@ -4064,7 +4064,7 @@ class getVer_result(object):
         if ftype == TType.LIST:
           self.success = []
           (_etype56, _size53) = iprot.readListBegin()
-          for _i57 in xrange(_size53):
+          for _i57 in range(_size53):
             _elem58 = TCell()
             _elem58.read(iprot)
             self.success.append(_elem58)
@@ -4245,7 +4245,7 @@ class getVerTs_result(object):
         if ftype == TType.LIST:
           self.success = []
           (_etype63, _size60) = iprot.readListBegin()
-          for _i64 in xrange(_size60):
+          for _i64 in range(_size60):
             _elem65 = TCell()
             _elem65.read(iprot)
             self.success.append(_elem65)
@@ -4390,7 +4390,7 @@ class getRow_result(object):
         if ftype == TType.LIST:
           self.success = []
           (_etype70, _size67) = iprot.readListBegin()
-          for _i71 in xrange(_size67):
+          for _i71 in range(_size67):
             _elem72 = TRowResult()
             _elem72.read(iprot)
             self.success.append(_elem72)
@@ -4481,7 +4481,7 @@ class getRowWithColumns_args(object):
         if ftype == TType.LIST:
           self.columns = []
           (_etype77, _size74) = iprot.readListBegin()
-          for _i78 in xrange(_size74):
+          for _i78 in range(_size74):
             _elem79 = iprot.readString();
             self.columns.append(_elem79)
           iprot.readListEnd()
@@ -4555,7 +4555,7 @@ class getRowWithColumns_result(object):
         if ftype == TType.LIST:
           self.success = []
           (_etype84, _size81) = iprot.readListBegin()
-          for _i85 in xrange(_size81):
+          for _i85 in range(_size81):
             _elem86 = TRowResult()
             _elem86.read(iprot)
             self.success.append(_elem86)
@@ -4712,7 +4712,7 @@ class getRowTs_result(object):
         if ftype == TType.LIST:
           self.success = []
           (_etype91, _size88) = iprot.readListBegin()
-          for _i92 in xrange(_size88):
+          for _i92 in range(_size88):
             _elem93 = TRowResult()
             _elem93.read(iprot)
             self.success.append(_elem93)
@@ -4806,7 +4806,7 @@ class getRowWithColumnsTs_args(object):
         if ftype == TType.LIST:
           self.columns = []
           (_etype98, _size95) = iprot.readListBegin()
-          for _i99 in xrange(_size95):
+          for _i99 in range(_size95):
             _elem100 = iprot.readString();
             self.columns.append(_elem100)
           iprot.readListEnd()
@@ -4889,7 +4889,7 @@ class getRowWithColumnsTs_result(object):
         if ftype == TType.LIST:
           self.success = []
           (_etype105, _size102) = iprot.readListBegin()
-          for _i106 in xrange(_size102):
+          for _i106 in range(_size102):
             _elem107 = TRowResult()
             _elem107.read(iprot)
             self.success.append(_elem107)
@@ -4980,7 +4980,7 @@ class mutateRow_args(object):
         if ftype == TType.LIST:
           self.mutations = []
           (_etype112, _size109) = iprot.readListBegin()
-          for _i113 in xrange(_size109):
+          for _i113 in range(_size109):
             _elem114 = Mutation()
             _elem114.read(iprot)
             self.mutations.append(_elem114)
@@ -5142,7 +5142,7 @@ class mutateRowTs_args(object):
         if ftype == TType.LIST:
           self.mutations = []
           (_etype119, _size116) = iprot.readListBegin()
-          for _i120 in xrange(_size116):
+          for _i120 in range(_size116):
             _elem121 = Mutation()
             _elem121.read(iprot)
             self.mutations.append(_elem121)
@@ -5302,7 +5302,7 @@ class mutateRows_args(object):
         if ftype == TType.LIST:
           self.rowBatches = []
           (_etype126, _size123) = iprot.readListBegin()
-          for _i127 in xrange(_size123):
+          for _i127 in range(_size123):
             _elem128 = BatchMutation()
             _elem128.read(iprot)
             self.rowBatches.append(_elem128)
@@ -5452,7 +5452,7 @@ class mutateRowsTs_args(object):
         if ftype == TType.LIST:
           self.rowBatches = []
           (_etype133, _size130) = iprot.readListBegin()
-          for _i134 in xrange(_size130):
+          for _i134 in range(_size130):
             _elem135 = BatchMutation()
             _elem135.read(iprot)
             self.rowBatches.append(_elem135)
@@ -6337,7 +6337,7 @@ class scannerOpen_args(object):
         if ftype == TType.LIST:
           self.columns = []
           (_etype140, _size137) = iprot.readListBegin()
-          for _i141 in xrange(_size137):
+          for _i141 in range(_size137):
             _elem142 = iprot.readString();
             self.columns.append(_elem142)
           iprot.readListEnd()
@@ -6501,7 +6501,7 @@ class scannerOpenWithStop_args(object):
         if ftype == TType.LIST:
           self.columns = []
           (_etype147, _size144) = iprot.readListBegin()
-          for _i148 in xrange(_size144):
+          for _i148 in range(_size144):
             _elem149 = iprot.readString();
             self.columns.append(_elem149)
           iprot.readListEnd()
@@ -6661,7 +6661,7 @@ class scannerOpenWithPrefix_args(object):
         if ftype == TType.LIST:
           self.columns = []
           (_etype154, _size151) = iprot.readListBegin()
-          for _i155 in xrange(_size151):
+          for _i155 in range(_size151):
             _elem156 = iprot.readString();
             self.columns.append(_elem156)
           iprot.readListEnd()
@@ -6820,7 +6820,7 @@ class scannerOpenTs_args(object):
         if ftype == TType.LIST:
           self.columns = []
           (_etype161, _size158) = iprot.readListBegin()
-          for _i162 in xrange(_size158):
+          for _i162 in range(_size158):
             _elem163 = iprot.readString();
             self.columns.append(_elem163)
           iprot.readListEnd()
@@ -6996,7 +6996,7 @@ class scannerOpenWithStopTs_args(object):
         if ftype == TType.LIST:
           self.columns = []
           (_etype168, _size165) = iprot.readListBegin()
-          for _i169 in xrange(_size165):
+          for _i169 in range(_size165):
             _elem170 = iprot.readString();
             self.columns.append(_elem170)
           iprot.readListEnd()
@@ -7210,7 +7210,7 @@ class scannerGet_result(object):
         if ftype == TType.LIST:
           self.success = []
           (_etype175, _size172) = iprot.readListBegin()
-          for _i176 in xrange(_size172):
+          for _i176 in range(_size172):
             _elem177 = TRowResult()
             _elem177.read(iprot)
             self.success.append(_elem177)
@@ -7368,7 +7368,7 @@ class scannerGetList_result(object):
         if ftype == TType.LIST:
           self.success = []
           (_etype182, _size179) = iprot.readListBegin()
-          for _i183 in xrange(_size179):
+          for _i183 in range(_size179):
             _elem184 = TRowResult()
             _elem184.read(iprot)
             self.success.append(_elem184)

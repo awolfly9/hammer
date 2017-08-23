@@ -6,9 +6,9 @@ setup(
     name = 'lgqhammer',
     version = '0.3.4',
 
-    requires = ['pymysql'],
+    requires = ['pymysql', 'thrift'],
 
-    packages = ['hammer', 'hammer.pymysqlpool', 'hammer.hbase'],
+    packages = ['hammer', 'hammer.pymysqlpool', 'hbase'],
     scripts = ['./kill_port'],
 
     url = 'http://awolfly9.com/',
