@@ -2,6 +2,7 @@
 
 
 import sys
+
 sys.path.append('..')
 
 import hammer
@@ -22,42 +23,53 @@ db_config = {
 if __name__ == '__main__':
     sql = SqlHelper(**db_config)
 
-
-    sql.create_db('ttttt')
-
-    command = '''
-    CREATE TABLE `test` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` char(255) DEFAULT NULL,
-  `age` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
-'''
-
-
-
-    # command = 'INSERT INTO user (name, age) VALUES (%s, %s)'
-
-    # sql.insert_data(command, ('dfjakd', 1233), commit = True)
-
-    data = {
-        'name': 'jfdjafl',
-        'age': '102'
+    fields = {
+        'name': 'wo shi  lgq',
+        'age': 24,
     }
 
-    # sql.insert_json(data, 'user', True)
+    cond = {
+        'id': 1
+    }
 
-    datas = []
-    datas.append(data)
-    datas.append(data)
-    datas.append(data)
-    datas.append(data)
+    sql.update_json(fields, cond, table_name = 'test', commit = True)
 
-    # sql.insert_json_list(datas, 'user', True)
-
-    command = 'SELECT * FROM user'
-    result = sql.query(command)
-    print(result)
-
-    result = sql.query_one(command)
-    print(result)
+    #
+    #     sql.create_db('ttttt')
+    #
+    #     command = '''
+    #     CREATE TABLE `test` (
+    #   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+    #   `name` char(255) DEFAULT NULL,
+    #   `age` int(11) DEFAULT NULL,
+    #   PRIMARY KEY (`id`)
+    # ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+    # '''
+    #
+    #
+    #
+    #     # command = 'INSERT INTO user (name, age) VALUES (%s, %s)'
+    #
+    #     # sql.insert_data(command, ('dfjakd', 1233), commit = True)
+    #
+    #     data = {
+    #         'name': 'jfdjafl',
+    #         'age': '102'
+    #     }
+    #
+    #     # sql.insert_json(data, 'user', True)
+    #
+    #     datas = []
+    #     datas.append(data)
+    #     datas.append(data)
+    #     datas.append(data)
+    #     datas.append(data)
+    #
+    #     # sql.insert_json_list(datas, 'user', True)
+    #
+    #     command = 'SELECT * FROM user'
+    #     result = sql.query(command)
+    #     print(result)
+    #
+    #     result = sql.query_one(command)
+    #     print(result)

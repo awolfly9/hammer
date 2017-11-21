@@ -7,6 +7,7 @@ from hammer.pymysqlpool import ConnectionPool
 
 logger = logging.getLogger('sqlhelper')
 
+
 # db_config_temp
 # db_config = {
 #     'pool_name': 'test',
@@ -147,6 +148,30 @@ class SqlHelper(object):
         except Exception as e:
             logger.exception('sql helper insert_data_list exception msg:%s' % e)
             return False
+
+    def update_json(self, datas, condition, table_name = None, commit = False, ):
+        try:
+            fields = ''
+            for i, (key, val) in enumerate(datas.items()):
+                fields += '{key}=\'{val}\''.format(key = key, val = val)
+                if i < len(datas.items()) - 1:
+                    fields += ','
+
+            cond_str = ''
+            for i, (key, val) in enumerate(condition.items()):
+                cond_str = '{key}={val}'.format(key = key, val = val)
+                if i < len(condition.items()) - 1:
+                    cond_str += ' and '
+
+            command = '''UPDATE {table_name} SET {fields} WHERE {condition};'''.format(
+                table_name = table_name, fields = fields, condition = cond_str)
+
+            with self._pool.connection() as conn:
+                conn.cursor().execute(command)
+                if commit:
+                    conn.commit()
+        except Exception as e:
+            logging.exception('sql helper update_json exception msg:%s' % e)
 
     def select_db(self, db_name):
         self._pool.select_db(db_name)
