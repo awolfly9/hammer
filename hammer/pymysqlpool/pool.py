@@ -63,9 +63,6 @@ class PoolContainer(object):
             return None
 
         if item in self:
-            logger.debug(
-                'Duplicate item found "{}", '
-                'current size is "{}"'.format(item, self.size))
             return None
 
         if self.pool_size >= self.max_pool_size:
@@ -75,10 +72,6 @@ class PoolContainer(object):
         with self._pool_lock:
             # self._pool_items.append(item)
             self._pool_items.add(item)
-
-        logger.debug(
-            'Add item "{!r}",'
-            ' current size is "{}"'.format(item, self.size))
 
     def return_(self, item):
         """Return a item to the pool. Note that the item to be returned should exist in this pool"""
@@ -91,22 +84,19 @@ class PoolContainer(object):
             return False
 
         self._free_items.put_nowait(item)
-        logger.debug('Return item "{!r}", current size is "{}"'.format(item, self.size))
         return True
 
-    def get(self, block=True, wait_timeout=60):
+    def get(self, block = True, wait_timeout = 60):
         """Block until a free item is found in `wait_timeout` seconds.
         Otherwise, a `WaitTimeoutException` will be raised.
 
         If `wait_timeout` is None, it will block forever until a free item is found.
         """
         try:
-            item = self._free_items.get(block, timeout=wait_timeout)
+            item = self._free_items.get(block, timeout = wait_timeout)
         except Empty:
             raise PoolIsEmptyException('Cannot find any available item')
         else:
-            logger.debug('Get item "{}",'
-                         ' current size is "{}"'.format(item, self.size))
             return item
 
     @property
