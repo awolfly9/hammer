@@ -1,15 +1,10 @@
 # -*-coding: utf-8-*-
-# Author : Christopher Lee
-# License: MIT License
-# File   : container.py
-# Date   : 2017-06-16 07-12
-# Version: 0.1
-# Description: pool container, thread-safe
-
-
 import logging
 import threading
-from queue import Queue, Empty
+try:
+    from Queue import Queue, Empty
+except:
+    from queue import Queue, Empty
 
 __version__ = '0.1'
 __author__ = 'Chris'

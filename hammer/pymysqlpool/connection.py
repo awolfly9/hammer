@@ -1,10 +1,4 @@
 # -*-coding: utf-8-*-
-# Author : Christopher Lee
-# License: MIT License
-# File   : pool.py
-# Date   : 2017-06-15 14-09
-# Version: 0.1
-# Description: connection pool manager.
 
 import logging
 import threading
