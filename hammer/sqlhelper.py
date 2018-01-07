@@ -124,7 +124,7 @@ class SqlHelper(object):
                 for j, k in enumerate(keys):
                     v = d.get(k, None)
                     if v is not None:
-                        value = value + '\'' + str(v) + '\''
+                        value = value + '\'' + str(v).replace('\'', '') + '\''
                     else:
                         value = value + 'NULL'
                     if j < len(keys) - 1:

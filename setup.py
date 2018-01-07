@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(
     name = 'lgqhammer',
-    version = '0.3.9',
+    version = '0.4.0',
 
     requires = ['pymysql', 'thrift'],
 
