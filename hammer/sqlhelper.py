@@ -118,26 +118,14 @@ class SqlHelper(object):
             return False
 
         try:
-            val_param = ''
-            for i, d in enumerate(datas):
-                value = '('
-                for j, k in enumerate(keys):
-                    v = d.get(k, None)
-                    if v is not None:
-                        value = value + '\'' + str(v).replace('\'', '') + '\''
-                    else:
-                        value = value + 'NULL'
-                    if j < len(keys) - 1:
-                        value = value + ','
-                if i < len(datas) - 1:
-                    value = value + '),'
-                else:
-                    value = value + ');'
+            val_param = []
+            for i, data in enumerate(datas):
+                s = '(' + ",".join(['"{0}"'.format(d) for d in data.values()]) + ')'
+                val_param.append(s)
+            val_param = ','.join(val_param)
+            key_param = ",".join(keys)
 
-                val_param = val_param + value
-
-            key_param = ','.join(keys)
-            command = "INSERT IGNORE INTO {table_name} ({keys}) values {val}". \
+            command = """INSERT IGNORE INTO {table_name} ({keys}) values {val}""". \
                 format(table_name = table_name, keys = key_param, val = val_param)
 
             with self._pool.connection() as conn:
@@ -148,6 +136,18 @@ class SqlHelper(object):
         except Exception as e:
             logger.exception('sql helper insert_data_list exception msg:%s' % e)
             return False
+
+    def insert_datas(self, datas, table_name = None, commit = False):
+        if len(datas) > 0:
+            keys = list(datas[0].keys())
+            return self.insert_data_list(keys = keys, datas = datas, table_name = table_name, commit = commit)
+
+    def insert_datas_test(self, datas, table_name, commit):
+        command = """INSERT INTO test (name, age) VALUES (%s, %s)"""
+        with self._pool.connection() as conn:
+            conn.cursor().executemany(command, datas)
+            if commit:
+                conn.commit()
 
     def update_json(self, datas, condition, table_name = None, commit = False, ):
         try:

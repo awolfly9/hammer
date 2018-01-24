@@ -3,9 +3,10 @@
 
 import sys
 
+import time
+
 sys.path.append('..')
 
-import hammer
 from hammer.sqlhelper import SqlHelper
 
 db_config = {
@@ -23,16 +24,36 @@ db_config = {
 if __name__ == '__main__':
     sql = SqlHelper(**db_config)
 
-    fields = {
-        'name': 'wo shi  lgq',
-        'age': 24,
-    }
+    start = time.time()
+    x = {'name': '1,2\'4', 'age': 12}
+    # x = ('1,2\'4', 23)
+    ds = []
+    for i in range(0, 200000):
+        ds.append(x)
+        # sql.insert_json(x, 'test', commit = False)
+    # sql.commit()
 
-    cond = {
-        'id': 1
-    }
+    # for d in ds:
+    #     x = list(d.values())
+    #     print(x)
+    #     # print(','.join(list(d.values())))
+    #     # print(','.join(x))
+    #     print(",".join([ '"{0}"'.format(i) for i in x]))
+    sql.insert_datas(ds, 'test', commit = True)
+    # sql.insert_datas_test(ds, 'test', commit = True)
+    print(time.time() - start)
 
-    sql.update_json(fields, cond, table_name = 'test', commit = True)
+
+    # fields = {
+    #     'name': 'wo shi  lgq',
+    #     'age': 24,
+    # }
+    #
+    # cond = {
+    #     'id': 1
+    # }
+    #
+    # sql.update_json(fields, cond, table_name = 'test', commit = True)
 
     #
     #     sql.create_db('ttttt')
