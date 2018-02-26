@@ -4,10 +4,11 @@
 import sys
 
 import time
-
+import logging
 sys.path.append('..')
-
+logging.basicConfig()
 from hammer.sqlhelper import SqlHelper
+
 
 db_config = {
     'pool_name': 'test',
@@ -25,11 +26,18 @@ if __name__ == '__main__':
     sql = SqlHelper(**db_config)
 
     start = time.time()
-    x = {'name': '1,2\'4', 'age': 12}
+    x = {'name': 'test', 'age': 12}
+    y = {'name': '1,2\'4', 'age': 12}
+    z = {'name': 'te"st', 'age': 12}
+    w = {'name': 't"e\'st', 'age': 12}
     # x = ('1,2\'4', 23)
     ds = []
-    for i in range(0, 200000):
-        ds.append(x)
+    ds.append(x)
+    ds.append(y)
+    ds.append(z)
+    ds.append(w)
+    # for i in range(0, 1):
+    #     ds.append(x)
         # sql.insert_json(x, 'test', commit = False)
     # sql.commit()
 

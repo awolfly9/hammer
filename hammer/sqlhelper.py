@@ -120,14 +120,13 @@ class SqlHelper(object):
         try:
             val_param = []
             for i, data in enumerate(datas):
-                s = '(' + ",".join(['"{0}"'.format(d) for d in data.values()]) + ')'
+                s = '(' + ",".join(["{0!r}".format(d if d is not None else '') for d in data.values()]) + ')'
                 val_param.append(s)
             val_param = ','.join(val_param)
             key_param = ",".join(keys)
 
             command = """INSERT IGNORE INTO {table_name} ({keys}) values {val}""". \
                 format(table_name = table_name, keys = key_param, val = val_param)
-
             with self._pool.connection() as conn:
                 conn.cursor().execute(command)
                 if commit:
