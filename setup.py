@@ -4,11 +4,11 @@ from distutils.core import setup
 
 setup(
     name = 'lgqhammer',
-    version = '0.4.4',
+    version = '0.5.0',
 
     requires = ['pymysql'],
 
-    packages = ['hammer', 'hammer.pymysqlpool'],
+    packages = ['hammer'],
     scripts = ['./kill_port'],
 
     url = 'http://awolfly9.com/',

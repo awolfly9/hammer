@@ -1,247 +1,110 @@
 # -*- coding=utf-8 -*-
 
-import logging
 import pymysql
-
-from hammer.pymysqlpool import ConnectionPool
-
-logger = logging.getLogger('sqlhelper')
 
 
 # db_config_temp
 # db_config = {
-#     'pool_name': 'test',
 #     'host': 'localhost',
 #     'port': 3306,
 #     'user': 'root',
 #     'password': '123456',
-#     'database': 'test',
-#     'pool_resize_boundary': 2,
-#     'enable_auto_resize': True,
-#     'max_pool_size': 1
+#     'db': 'test',
 # }
-
 class SqlHelper(object):
     def __init__(self, **db_config):
-        self._pool = self._conn_pool(**db_config)
-        self.db_config = db_config
-        self.db_name = db_config.get('database', None)
+        self.connection = pymysql.connect(cursorclass = pymysql.cursors.DictCursor, **db_config)
+        self.db_name = db_config.get('db')
 
-    def _conn_pool(self, **db_config):
-        pool = ConnectionPool(**db_config)
-        return pool
+    def execute(self, command, args = None, commit = True):
+        with self.connection.cursor() as cursor:
+            cursor.execute(command, args)
 
-    def create_db(self, db_name):
-        try:
-            command = 'CREATE DATABASE IF NOT EXISTS %s DEFAULT CHARACTER SET \'utf8\' ' % db_name
-            with self._pool.connection() as conn:
-                conn.cursor().execute(command)
-                conn.commit()
-            return True
-        except Exception as e:
-            logger.exception('sql helper create_database exception:%s' % str(e))
-            return False
-
-    def create_table(self, command):
-        try:
-            with self._pool.connection() as conn:
-                conn.cursor().execute(command)
-                conn.commit()
-            return True
-        except Exception as e:
-            logger.exception('sql helper create_table exception:%s' % str(e))
-            return False
-
-    def insert_data(self, command, data, commit = False):
-        try:
-            with self._pool.connection() as conn:
-                conn.cursor().execute(command, data)
-                if commit:
-                    conn.commit()
-            return True
-        except Exception as e:
-            logger.exception('sql helper insert_data exception msg:%s' % e, logging.WARNING)
-            return False
-
-    def insert_json(self, data = {}, table_name = None, commit = False):
-        try:
-            keys = []
-            vals = []
-            for k, v in data.items():
-                keys.append(k)
-                vals.append(v)
-            val_str = ','.join(['%s'] * len(vals))
-            key_str = ','.join(keys)
-
-            command = "INSERT IGNORE INTO {table} ({keys}) VALUES({values})". \
-                format(keys = key_str, values = val_str, table = table_name)
-            with self._pool.connection() as conn:
-                conn.cursor().execute(command, tuple(vals))
-                if commit:
-                    conn.commit()
-            return True
-        except Exception as e:
-            logger.exception('sql helper insert_json exception msg:%s' % e)
-            return False
-
-    def insert_json_list(self, datas, table_name = None, commit = False):
-        try:
-            if len(datas) < 0:
-                return
-            data = datas[0]
-            keys = list(data.keys())
-            values = [list(data.values()) for data in datas]
-
-            return self.insert_list(keys, values, table_name, commit)
-        except Exception as e:
-            logger.exception('sql helper insert_json_list exception msg:%s' % e)
-            return False
-
-    # keys = ['name', 'age'] values = [('liu', 10), ('guang', 20'), ('quan', 30)]
-    def insert_list(self, keys, values, table_name = None, commit = False):
-        try:
-            key_param = ','.join(keys)
-            val_param = ','.join(['%s'] * len(keys))
-
-            command = "INSERT IGNORE INTO {table_name} ({keys}) values({val})". \
-                format(table_name = table_name, keys = key_param, val = val_param)
-            with self._pool.connection() as conn:
-                conn.cursor().executemany(command, values)
-                if commit:
-                    conn.commit()
-        except Exception as e:
-            logger.exception('sql helper insert_json exception msg:%s' % e)
-            return False
-
-    def insert_data_list(self, keys, datas, table_name = None, commit = False):
-        if len(keys) <= 0 or len(datas) <= 0:
-            return False
-
-        try:
-            val_param = []
-            for i, data in enumerate(datas):
-                s = '(' + ",".join(["{0!r}".format(d if d is not None else '') for d in data.values()]) + ')'
-                val_param.append(s)
-            val_param = ','.join(val_param)
-            key_param = ",".join(keys)
-
-            command = """INSERT IGNORE INTO {table_name} ({keys}) values {val}""". \
-                format(table_name = table_name, keys = key_param, val = val_param)
-            with self._pool.connection() as conn:
-                conn.cursor().execute(command)
-                if commit:
-                    conn.commit()
-            return True
-        except Exception as e:
-            logger.exception('sql helper insert_data_list exception msg:%s' % e)
-            return False
-
-    def insert_datas(self, datas, table_name = None, commit = False):
-        if len(datas) > 0:
-            keys = list(datas[0].keys())
-            return self.insert_data_list(keys = keys, datas = datas, table_name = table_name, commit = commit)
-
-    def insert_datas_test(self, datas, table_name, commit):
-        command = """INSERT INTO test (name, age) VALUES (%s, %s)"""
-        with self._pool.connection() as conn:
-            conn.cursor().executemany(command, datas)
-            if commit:
-                conn.commit()
-
-    def update_json(self, datas, condition, table_name = None, commit = False, ):
-        try:
-            fields = ''
-            for i, (key, val) in enumerate(datas.items()):
-                fields += '{key}=\'{val}\''.format(key = key, val = val)
-                if i < len(datas.items()) - 1:
-                    fields += ','
-
-            cond_str = ''
-            for i, (key, val) in enumerate(condition.items()):
-                cond_str = '{key}={val}'.format(key = key, val = val)
-                if i < len(condition.items()) - 1:
-                    cond_str += ' and '
-
-            command = '''UPDATE {table_name} SET {fields} WHERE {condition};'''.format(
-                table_name = table_name, fields = fields, condition = cond_str)
-
-            with self._pool.connection() as conn:
-                conn.cursor().execute(command)
-                if commit:
-                    conn.commit()
-        except Exception as e:
-            logging.exception('sql helper update_json exception msg:%s' % e)
+        if commit:
+            self.connection.commit()
 
     def select_db(self, db_name):
-        self._pool.select_db(db_name)
         self.db_name = db_name
+        self.connection.select_db(db_name)
+
+    def insert_datas(self, datas, table_name, db_name = None, commit = True):
+        if len(datas) <= 0:
+            return False
+
+        keys = list(datas[0].keys())
+        val_param = []
+        for i, data in enumerate(datas):
+            s = '(' + ",".join(["{0!r}".format(d if d is not None else '') for d in data.values()]) + ')'
+            val_param.append(s)
+        val_param = ','.join(val_param)
+        key_param = ",".join(keys)
+
+        if db_name is None:
+            db_name = self.db_name
+
+        command = """INSERT IGNORE INTO {db_name}.{table_name} ({keys}) values {val}""". \
+            format(table_name = table_name, keys = key_param, val = val_param, db_name = db_name)
+        with self.connection.cursor() as cursor:
+            cursor.execute(command)
+            if commit:
+                self.connection.commit()
+            return True
+
+    def update_datas(self, datas, table_name, update_keys = list([]), db_name = None, commit = True):
+        if len(datas) <= 0:
+            return False
+        keys = list(datas[0].keys())
+        val_param = []
+        for i, data in enumerate(datas):
+            s = '(' + ",".join(["{0!r}".format(d if d is not None else '') for d in data.values()]) + ')'
+            val_param.append(s)
+        val_param = ','.join(val_param)
+        key_param = ",".join(keys)
+        update_param = ', '.join(['%s=VALUES(%s)' % (k, k) for k in update_keys])
+
+        if db_name is None:
+            db_name = self.db_name
+
+        command = """INSERT IGNORE INTO {db_name}.{table_name} ({keys}) values {val} ON DUPLICATE KEY UPDATE {update}""". \
+            format(table_name = table_name, keys = key_param, val = val_param, db_name = db_name, update = update_param)
+        with self.connection.cursor() as cursor:
+            cursor.execute(command)
+            if commit:
+                self.connection.commit()
+            return True
 
     def commit(self):
-        for conn in self._pool:
-            conn.commit()
+        self.connection.commit()
 
     def close(self):
-        self._pool.close()
+        self.connection.close()
 
-    def execute(self, command, commit = True):
-        try:
-            with self._pool.connection() as conn:
-                conn.cursor().execute(command)
-                if commit:
-                    conn.commit()
-            return True
-        except Exception as e:
-            logger.exception('sql helper execute exception msg:%s' % str(e))
-            return False
+    def query(self, command):
+        with self.connection.cursor() as cursor:
+            cursor.execute(command)
+            data = cursor.fetchall()
+            return data
 
-    def query(self, command, commit = False, cursor_type = 'tuple'):
-        try:
-            with self._pool.connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute(command)
-                data = cursor.fetchall()
-                if commit:
-                    conn.commit()
-                return data
-        except Exception as e:
-            logger.exception('sql helper execute exception msg:%s' % str(e))
-            return None
-
-    def query_one(self, command, commit = False, cursor_type = 'tuple'):
-        try:
-            with self._pool.connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute(command)
-                data = cursor.fetchone()
-                if commit:
-                    conn.commit()
-                return data
-        except Exception as e:
-            logger.exception('sql helper execute exception msg:%s' % str(e))
-            return None
-            # 在整个 mysql 中查找
+    def query_one(self, command):
+        with self.connection.cursor() as cursor:
+            cursor.execute(command)
+            data = cursor.fetchone()
+            return data
 
     def is_exists(self, table_name):
-        try:
-            command = "SHOW TABLES LIKE '%s'" % table_name
-            with self._pool.connection() as conn:
-                res = conn.cursor().execute(command)
-                return True if res == 1 else False
-        except Exception as e:
-            logger.exception('sql helper is_exists exception msg:%s' % e)
-            return False
+        command = "SHOW TABLES LIKE '%s'" % table_name
+        with self.connection.cursor() as cursor:
+            cursor.execute(command)
+            data = cursor.fetchone()
+            return True if data is not None else False
 
     def check_table_exists(self, table_name, db_name = None):
         if db_name is None:
             db_name = self.db_name
 
-        command = """SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '{db_name}' AND table_name = '{table_name}'""".format(
+        command = """SELECT * FROM information_schema.tables WHERE table_schema = '{db_name}' AND table_name = '{table_name}';""".format(
             db_name = db_name, table_name = table_name)
-        try:
-            with self._pool.connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute(command)
-                if cursor.fetchone()[0] == 1:
-                    return True
-        except:
-            return False
+        with self.connection.cursor() as cursor:
+            cursor.execute(command)
+            data = cursor.fetchone()
+            return True if data is not None else False
