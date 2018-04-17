@@ -16,9 +16,9 @@ class SqlHelper(object):
         self.connection = pymysql.connect(cursorclass = pymysql.cursors.DictCursor, **db_config)
         self.db_name = db_config.get('db')
 
-    def execute(self, command, args = None, commit = True):
+    def execute(self, command, commit = True):
         with self.connection.cursor() as cursor:
-            cursor.execute(command, args)
+            cursor.execute(command)
 
         if commit:
             self.connection.commit()

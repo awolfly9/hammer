@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(
     name = 'lgqhammer',
-    version = '0.5.0',
+    version = '0.5.1',
 
     requires = ['pymysql'],
 

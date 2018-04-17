@@ -32,6 +32,21 @@ class EasyEmail(object):
         self.server.login(self.from_email, password)
         return True
 
+    def login_qq(self, **kwargs):
+        '''
+        :param kwargs:
+        :return: status
+        '''
+        self.from_email = kwargs.get('from_email')
+        password = kwargs.get('password')
+
+        self.server = smtplib.SMTP_SSL("smtp.qq.com", 465)
+
+        self.server.ehlo()
+        self.server.starttls()
+        self.server.login(self.from_email, password)
+        return True
+
     # infos = [
     #     {
     #         'to_email': 'awolfly9@gmail.com',
