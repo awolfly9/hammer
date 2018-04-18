@@ -42,8 +42,8 @@ class EasyEmail(object):
 
         self.server = smtplib.SMTP_SSL("smtp.qq.com", 465)
 
-        self.server.ehlo()
-        self.server.starttls()
+        # self.server.ehlo()
+        # self.server.starttls()
         self.server.login(self.from_email, password)
         return True
 
