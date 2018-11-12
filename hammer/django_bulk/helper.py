@@ -1,4 +1,6 @@
 # -*- coding=utf-8 -*-
+
+from copy import copy
 from django.db import models
 
 from .manager import BulkInsertManager
@@ -24,9 +26,13 @@ def bulk_insert(db_table, datas=[]):
         return
 
     objs = []
+    obj = Virtual()
+    old_fields = obj._meta.local_fields
     for i, data in enumerate(datas):
         obj = Virtual()
         obj._meta.db_table = db_table
+        if i == 0:
+            old_fields = copy(obj._meta.local_fields)
         for key, value in data.items():
             m = models.TextField(default=None)
             m.column = key
@@ -41,6 +47,9 @@ def bulk_insert(db_table, datas=[]):
             obj._meta.concrete_fields = obj._meta.local_fields
         objs.append(obj)
     bulk_create(objs)
+    obj = Virtual()
+    obj._meta.local_fields = old_fields
+    obj._meta.concrete_fields = old_fields
 
 
 def bulk_create_or_update(objs, meta=None, update_fields=None, exclude_fields=None,
